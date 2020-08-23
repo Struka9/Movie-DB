@@ -214,7 +214,7 @@ class DetailsBody extends StatelessWidget {
         Padding(
           padding: EdgeInsets.symmetric(
             horizontal: 16,
-            vertical: 8,
+            vertical: 4,
           ),
           child: Text(
             movie.title,
@@ -226,7 +226,7 @@ class DetailsBody extends StatelessWidget {
         Padding(
           padding: EdgeInsets.symmetric(
             horizontal: 16,
-            vertical: 8,
+            vertical: 4,
           ),
           child: Row(
             mainAxisSize: MainAxisSize.min,
@@ -254,7 +254,7 @@ class DetailsBody extends StatelessWidget {
         Padding(
           padding: EdgeInsets.symmetric(
             horizontal: 16,
-            vertical: 8,
+            vertical: 4,
           ),
           child: Container(
             height: 30,
@@ -292,7 +292,7 @@ class DetailsBody extends StatelessWidget {
         Padding(
           padding: EdgeInsets.symmetric(
             horizontal: 16,
-            vertical: 8,
+            vertical: 4,
           ),
           child: Text(
             "Plot Summary",
@@ -301,22 +301,26 @@ class DetailsBody extends StatelessWidget {
                 ),
           ),
         ),
-        Padding(
-          padding: EdgeInsets.symmetric(
-            horizontal: 16,
-            vertical: 8,
-          ),
-          child: Text(
-            movie.overview,
+        Expanded(
+          child: SingleChildScrollView(
+            child: Padding(
+              padding: EdgeInsets.symmetric(
+                horizontal: 16,
+                vertical: 4,
+              ),
+              child: Text(
+                movie.overview,
+              ),
+            ),
           ),
         ),
         SizedBox(
-          height: 16,
+          height: 4,
         ),
         Padding(
           padding: EdgeInsets.symmetric(
             horizontal: 16,
-            vertical: 8,
+            vertical: 4,
           ),
           child: Text(
             "Cast & Crew",
@@ -324,64 +328,71 @@ class DetailsBody extends StatelessWidget {
           ),
         ),
         SizedBox(
-          height: 16,
+          height: 4,
         ),
-        FutureBuilder<dynamic>(
-          builder: (context, snapshot) {
-            if (snapshot.connectionState == ConnectionState.waiting) {
-              return Container(
-                height: 50,
-                child: Center(
-                  child: CircularProgressIndicator(),
+        Padding(
+          padding: EdgeInsets.only(
+            bottom: 4,
+          ),
+          child: FutureBuilder<dynamic>(
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return Container(
+                  height: 50,
+                  child: Center(
+                    child: CircularProgressIndicator(),
+                  ),
+                );
+              }
+
+              final widgets = snapshot.data
+                  .map<Widget>(
+                    (e) => Padding(
+                      padding: EdgeInsets.symmetric(
+                        horizontal: 8,
+                      ),
+                      child: Column(
+                        children: [
+                          CircleAvatar(
+                            backgroundImage: e['profile_path'] != null
+                                ? NetworkImage(
+                                    buildImageUrl(
+                                      e['profile_path'],
+                                    ),
+                                  )
+                                : null,
+                          ),
+                          Text(
+                            e['name'],
+                            style:
+                                Theme.of(context).textTheme.bodyText1.copyWith(
+                                      fontSize: 15,
+                                    ),
+                          ),
+                          Text(
+                            e['character'],
+                            style:
+                                Theme.of(context).textTheme.bodyText1.copyWith(
+                                      fontSize: 12,
+                                      color: Colors.black.withOpacity(0.6),
+                                    ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  )
+                  .toList();
+
+              return SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
+                child: Row(
+                  children: widgets,
                 ),
               );
-            }
-
-            final widgets = snapshot.data
-                .map<Widget>(
-                  (e) => Padding(
-                    padding: EdgeInsets.symmetric(
-                      horizontal: 8,
-                    ),
-                    child: Column(
-                      children: [
-                        CircleAvatar(
-                          backgroundImage: e['profile_path'] != null
-                              ? NetworkImage(
-                                  buildImageUrl(
-                                    e['profile_path'],
-                                  ),
-                                )
-                              : null,
-                        ),
-                        Text(
-                          e['name'],
-                          style: Theme.of(context).textTheme.bodyText1.copyWith(
-                                fontSize: 15,
-                              ),
-                        ),
-                        Text(
-                          e['character'],
-                          style: Theme.of(context).textTheme.bodyText1.copyWith(
-                                fontSize: 12,
-                                color: Colors.black.withOpacity(0.6),
-                              ),
-                        ),
-                      ],
-                    ),
-                  ),
-                )
-                .toList();
-
-            return SingleChildScrollView(
-              scrollDirection: Axis.horizontal,
-              child: Row(
-                children: widgets,
-              ),
-            );
-          },
-          future: getCredits(
-            movie.id,
+            },
+            future: getCredits(
+              movie.id,
+            ),
           ),
         )
       ],
