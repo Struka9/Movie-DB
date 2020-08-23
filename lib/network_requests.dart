@@ -44,7 +44,7 @@ Future<List<MovieOverview>> getMoviesUpcoming() async {
   } else {
     return Future.error(response.statusCode);
   }
-
+}
 
 Future<List<MovieOverview>> getMoviesPopular() async {
   final response =
@@ -55,7 +55,7 @@ Future<List<MovieOverview>> getMoviesPopular() async {
   } else {
     return Future.error(response.statusCode);
   }
-}}
+}
 
 Future<List<MovieOverview>> getMoviesNowPlaying() async {
   final response =
